@@ -48,9 +48,6 @@ function GalleryImage(imgLocation, description, date, imgPath) {
 // Counter for the mImages array
 var mCurrentIndex = 0;
 
-//Current image
-var currentImg;
-
 // URL for the JSON to load by default
 // Some options for you are: images.json, images.short.json; you will need to create your own extra.json later
 var mUrl = 'images.json';
@@ -69,6 +66,7 @@ mRequest.onreadystatechange = function() {
 		}
 	}
 };
+
 mRequest.open("GET", mUrl, true);
 mRequest.send();
 
@@ -90,9 +88,9 @@ function swapPhoto() {
 	//Swap current photo with new src / update the detail section
 	//div.details section with the extracted info.
 	$("#photo").attr("src",mImages[mCurrentIndex].imgPath);
-	$("#location").html("Location: " + currentImg.imgLocation);
-	$("#description").html("Description: " + currentImg.description);
-	$("#date").html("Date: " + currentImg.date);
+	$(".location").text("Location: " + mImages[mCurrentIndex].imgLocation);
+	$(".description").text("Description: " + mImages[mCurrentIndex].description);
+	$(".date").text("Date: " + mImages[mCurrentIndex].date);
 	
 	console.log('swap photo');
 }
@@ -108,9 +106,9 @@ function reverseSwap(){
 	};
 	
 	$("#photo").attr("src",mImages[mCurrentIndex].imgPath);
-	$("#location").html("Location: " + currentImg.imgLocation);
-	$("#description").html("Description: " + currentImg.description);
-	$("#date").html("Date: " + currentImg.date);
+	$(".location").text("Location: " + mImages[mCurrentIndex].imgLocation);
+	$(".description").text("Description: " + mImages[mCurrentIndex].description);
+	$(".date").text("Date: " + mImages[mCurrentIndex].date);
 }
 
 
@@ -123,25 +121,41 @@ function makeGalleryImageOnloadCallback(galleryImage) {
 	}
 }
 
+//PART 4: ALTERNATE JSON INPUT USING GET
+
+function getParams(x) {
+	 x = x.split("+").join(" ");
+	 var params = {},
+	 tokens,
+	 re = /[?&]?([^=]+)=([^&]*)/g;
+	 while (tokens = re.exec(x)) {
+	 	params[decodeURIComponent(tokens[1])]
+	 	= decodeURIComponent(tokens[2]);
+	 }
+	 return params;
+} 
+
+var $_GET = getParams(document.location.search);
+
 $(document).ready( function() {
-	//PART 3: GELLERY
+	//PART 3: GALLERY
 	// This initially hides the photos' metadata information
 	$('.details').eq(0).hide();
 	
 	// Toggle image information
 	//Add a click handler to the img.moreIndicator
-	$('#more').on('click', () => {
+	$('.moreIndicator').on('click', () => {
 		if($(this).hasClass("rot90")){
 			//cause the arrow to animate upside down
-			$('#more').addClass('rot270'); 
-			$('#more').removeClass('rot90');
+			$('.moreIndicator').addClass('rot270'); 
+			$('.moreIndicator').removeClass('rot90');
 			//Slides down/up the div.details depending on the arrow direction
-			$('.details').eq(0).slideDown();
+			$('.details').eq(0).toggle();
 		}
 		else{
-			$('#more').addClass('rot90');
-			$('#more').removeClass('rot270');
-			$('.details').eq(0).slideUp();
+			$('.moreIndicator').addClass('rot90');
+			$('.moreIndicator').removeClass('rot270');
+			$('.details').eq(0).toggle();
 		}
 	});
 	
@@ -152,13 +166,11 @@ $(document).ready( function() {
 	//when #prevphoto is pressed.
 
 	$('#prevPhoto').click(function() {
-		console.log(mCurrentIndex);
-		swapPhotoBack();		
+		reverseSwap();		
 	});
 	
 	$('#nextPhoto').on('click', function() {
 		swapPhoto();	
-		console.log(mCurrentIndex);
 	});
 	
 });
