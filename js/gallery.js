@@ -31,6 +31,22 @@ function animate() {
 }
 
 /************* DO NOT TOUCH CODE ABOVE THIS LINE ***************/
+//PART 4: ALTERNATE JSON INPUT USING GET
+
+function getParams(qs) {
+	 qs = qs.split("+").join(" ");
+	 var params = {},
+	 tokens,
+	 re = /[?&]?([^=]+)=([^&]*)/g;
+	 while (tokens = re.exec(qs)) {
+	 	params[decodeURIComponent(tokens[1])]
+	 	= decodeURIComponent(tokens[2]);
+	 }
+	 return params;
+} 
+
+var $_GET = getParams(document.location.search);
+
 //PART 1: CREATE A JAVASCRIPT OBJECT
 function GalleryImage(imgLocation, description, date, imgPath) {
 	//implement me as an object to hold the following data about an image:
@@ -66,7 +82,12 @@ mRequest.onreadystatechange = function() {
 		}
 	}
 };
-
+if($_GET['json'] == undefined){
+	mUrl = "images.json";
+}
+else{
+	mUrl = $_GET['json'];
+}
 mRequest.open("GET", mUrl, true);
 mRequest.send();
 
@@ -120,22 +141,6 @@ function makeGalleryImageOnloadCallback(galleryImage) {
 		mImages.push(galleryImage);
 	}
 }
-
-//PART 4: ALTERNATE JSON INPUT USING GET
-
-function getParams(qs) {
-	 qs = qs.split("+").join(" ");
-	 var params = {},
-	 tokens,
-	 re = /[?&]?([^=]+)=([^&]*)/g;
-	 while (tokens = re.exec(qs)) {
-	 	params[decodeURIComponent(tokens[1])]
-	 	= decodeURIComponent(tokens[2]);
-	 }
-	 return params;
-} 
-
-var $_GET = getParams(document.location.search);
 
 $(document).ready( function() {
 	//PART 3: GALLERY
