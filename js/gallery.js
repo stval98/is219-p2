@@ -32,7 +32,7 @@ function animate() {
 
 /************* DO NOT TOUCH CODE ABOVE THIS LINE ***************/
 //PART 1: CREATE A JAVASCRIPT OBJECT
-function GalleryImage(imgLocation, description, date, img) {
+function GalleryImage(imgLocation, description, date, imgPath) {
 	//implement me as an object to hold the following data about an image:
 	//1. location where photo was taken
 	this.imgLocation = imgLocation;
@@ -41,12 +41,15 @@ function GalleryImage(imgLocation, description, date, img) {
 	//3. the date when the photo was taken
 	this.date = date;
 	//4. either a String (src URL) or an an HTMLImageObject (bitmap of the photo. https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement)
-	this.img = img;
+	this.imgPath = imgPath;
 }
 
 //PART 2: SLIDESHOW
 // Counter for the mImages array
 var mCurrentIndex = 0;
+
+//Current image
+var currentImg;
 
 // URL for the JSON to load by default
 // Some options for you are: images.json, images.short.json; you will need to create your own extra.json later
@@ -62,7 +65,7 @@ mRequest.onreadystatechange = function() {
 		// Holds the retrived JSON information - contains a list of photo URLs and related metadata
 		var mJson = JSON.parse(mRequest.responseText);
 		for (var i = 0; i < mJson.images.length; i++){ 
-			mImages.push(new GalleryImage(mJson.images[i].imgLocation, mJson.images[i].description, mJson.images[i].date, mJson.images[i].img))
+			mImages.push(new GalleryImage(mJson.images[i].imgLocation, mJson.images[i].description, mJson.images[i].date, mJson.images[i].imgPath))
 		}
 	}
 };
@@ -76,15 +79,6 @@ function swapPhoto() {
 	//with a new image from your images array which is loaded 
 	//from the JSON string
 	
-	//Implement swapPhoto() so when it gets called, it finds the <img> inside the div#slideShow
-	//and swaps its current src with a new src on a GalleryImage object in your array. Use the
-	//GalleryImage’s metadata information (Description, Location, and Date) and update the
-	//div.details section with the extracted info.
-	$("#photo").attr("src",mImages[mCurrentIndex].img);
-	$("#location").attr("value",mImages[mCurrentIndex].imgLocation);
-	$("#description").attr("value",mImages[mCurrentIndex].description);
-	$("#date").attr("value",mImages[mCurrentIndex].date);
-	
 	//Use a counter called mCurrentIndex to loop through all GalleryImage objects in the array.
 	//When you reach the end, start over again.
 	if(mCurrentIndex < mImages.length){
@@ -93,7 +87,30 @@ function swapPhoto() {
 	else{
 		mCurrentIndex = 0;
 	};
+	//Swap current photo with new src / update the detail section
+	//div.details section with the extracted info.
+	$("#photo").attr("src",mImages[mCurrentIndex].imgPath);
+	$("#location").html("Location: " + currentImg.imgLocation);
+	$("#description").html("Description: " + currentImg.description);
+	$("#date").html("Date: " + currentImg.date);
+	
 	console.log('swap photo');
+}
+
+//Loop in reverse
+function reverseSwap(){
+	if(mCurrentIndex <= 0){
+		mCurrentIndex = mImages.length;
+	}
+	else{
+		mCurrentIndex --;
+		currentImg = mImages[mCurrentIndex];
+	};
+	
+	$("#photo").attr("src",mImages[mCurrentIndex].imgPath);
+	$("#location").html("Location: " + currentImg.imgLocation);
+	$("#description").html("Description: " + currentImg.description);
+	$("#date").html("Date: " + currentImg.date);
 }
 
 
@@ -107,9 +124,42 @@ function makeGalleryImageOnloadCallback(galleryImage) {
 }
 
 $(document).ready( function() {
-	
+	//PART 3: GELLERY
 	// This initially hides the photos' metadata information
 	$('.details').eq(0).hide();
+	
+	// Toggle image information
+	//Add a click handler to the img.moreIndicator
+	$('#more').on('click', () => {
+		if($(this).hasClass("rot90")){
+			//cause the arrow to animate upside down
+			$('#more').addClass('rot270'); 
+			$('#more').removeClass('rot90');
+			//Slides down/up the div.details depending on the arrow direction
+			$('.details').eq(0).slideDown();
+		}
+		else{
+			$('#more').addClass('rot90');
+			$('#more').removeClass('rot270');
+			$('.details').eq(0).slideUp();
+		}
+	});
+	
+	//Add click handlers (in jQuery) to the #nextPhoto and #prevPhoto in the div#nav so that when
+	//they are clicked, they will go to the next photo or the previous photo, respectively. They
+	//should be shown in the array order. On the last photo, it should loop back to the first photo
+	//when #nextPhoto is pressed. Likewise, on the first photo, it should loop back to the last photo
+	//when #prevphoto is pressed.
+
+	$('#prevPhoto').click(function() {
+		console.log(mCurrentIndex);
+		swapPhotoBack();		
+	});
+	
+	$('#nextPhoto').on('click', function() {
+		swapPhoto();	
+		console.log(mCurrentIndex);
+	});
 	
 });
 
