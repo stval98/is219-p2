@@ -33,7 +33,6 @@ body {
 	top: 330px;
 	left:300px;
 	vertical-align: center;
-	
 	-moz-transform: : all 1s ease;
 	-webkit-transform: : all 1s ease;
 	-o-transform: : all 1s ease;
@@ -51,7 +50,8 @@ body {
 
 .thumbnail {
 	position: relative;
-	width: 650px
+	width: 100%;
+	margin: 0 auto;
 	box-shadow: 1px 3px 20px 0px;
 }
 

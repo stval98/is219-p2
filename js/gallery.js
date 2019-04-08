@@ -123,12 +123,12 @@ function makeGalleryImageOnloadCallback(galleryImage) {
 
 //PART 4: ALTERNATE JSON INPUT USING GET
 
-function getParams(x) {
-	 x = x.split("+").join(" ");
+function getParams(qs) {
+	 qs = qs.split("+").join(" ");
 	 var params = {},
 	 tokens,
 	 re = /[?&]?([^=]+)=([^&]*)/g;
-	 while (tokens = re.exec(x)) {
+	 while (tokens = re.exec(qs)) {
 	 	params[decodeURIComponent(tokens[1])]
 	 	= decodeURIComponent(tokens[2]);
 	 }
