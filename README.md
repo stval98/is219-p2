@@ -2,7 +2,7 @@ Sophia Saint-Val IS 219-002 Project 2
 --------------------
 
 ### Heroku app
-Heroku app can be found **[here](https://saint-val-is219-p2.herokuapp.com/)**.
+Heroku app can be found **[here](http://saint-val-is219-p2.herokuapp.com/)**.
 
 ***
 
